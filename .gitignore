@@ -1,0 +1,38 @@
+# Deployment related files #
+############################
+components
+node_modules
+temp
+dist
+logs
+.sass-cache
+.tmp
+
+# IDE generated files #
+######################
+.idea/
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# Misc #
+########
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+pids
+results
+npm-debug.log
