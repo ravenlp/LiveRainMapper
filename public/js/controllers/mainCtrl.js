@@ -3,25 +3,6 @@
 angular.module('rainMapper')
     .controller('MainCtrl', ['$scope', 'socket','$timeout', function ($scope, socket, $timeout) {
 
-        $scope.layers =  {
-            baselayers: {
-                googleTerrain: {
-                    name: 'Google Terrain',
-                        layerType: 'TERRAIN',
-                        type: 'google'
-                },
-                googleHybrid: {
-                    name: 'Google Hybrid',
-                        layerType: 'HYBRID',
-                        type: 'google'
-                },
-                googleRoadmap: {
-                    name: 'Google Streets',
-                        layerType: 'ROADMAP',
-                        type: 'google'
-                }
-            }
-        };
 
 
         $scope.tweets = [];
@@ -37,12 +18,34 @@ angular.module('rainMapper')
             }
         };
 
-        var validatorsLayer = new OsmJs.Weather.LeafletLayer({lang: 'en'});
+
+        var mapquestUrl = "http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png",
+            mapquestSubDomains = ["otile1","otile2","otile3","otile4"],
+            mapquestAttrib = 'Data, imagery and map information provided by '
+                + '<a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, '
+                + '<a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and '
+                + '<a href="http://wiki.openstreetmap.org/wiki/Contributors" target="_blank">contributors</a>. '
+                + 'Data: <a href="http://wiki.openstreetmap.org/wiki/Open_Database_License" target="_blank">ODbL</a>, '
+                + 'Map: <a href="http://creativecommons.org/licenses/by-sa/2.0/" target="_blank">CC-BY-SA</a>',
+            mapquest = new L.TileLayer(mapquestUrl, {maxZoom: 18, attribution: mapquestAttrib, subdomains: mapquestSubDomains});
+
+        var rain = L.OWM.rain({opacity: 0.5});
+
+        var overlayMaps = {
+            "Rain": rain
+        };
+
+        var baseMaps = {
+            "Mapquest Open": mapquest
+        };
+
+        var layerControl = L.control.layers(baseMaps, overlayMaps, {collapsed: false});
 
         //map.addLayer(validatorsLayer);
         $timeout(function(){
 
-            $scope.$broadcast('leafletDirectiveSetMap', ['addLayer', validatorsLayer]);
+             console.log("HECHO");
+            $scope.$broadcast('leafletDirectiveSetMap', ['addControl',layerControl]);
         }, 1000);
 
         // Incoming data
