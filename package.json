@@ -1,6 +1,6 @@
 {
-  "name": "twitter-cash-heatmap",
-  "version": "0.0.1",
+  "name": "liveRainMapper",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "node app.js"

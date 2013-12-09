@@ -6,16 +6,11 @@ AngularJs + NodeJs app that use the twitter stream to visualize the current loca
 Installation
 =======================
 
-Download Node dependencies:
-```npm install```
-
-Then the js needed:
-```bower install```
-
-You can start the server by simply doing:
-```node app.js```
-
-Express should be listening on the 3000 port so go to http://localhost:3000 to get started
+1. Add your twitter API credentials on the app.js file.
+2. Download Node dependencies: ```npm install```
+3. Then the js needed: ```bower install```
+4. You can start the server by simply doing: ```node app.js```
+5. Express should be listening on the 3000 port so go to http://localhost:3000 to get started
 
 
 Screenshot

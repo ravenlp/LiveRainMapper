@@ -19,17 +19,6 @@ var server = http.createServer(app);
 // default twitter symbols array
 var watchTerms = ['llueve', 'lloviendo', 'llovio', 'llovió', 'llovera', 'chaparron', 'viento', 'inundacion', 'agua', 'tormenta'];
 
-// Geo fence
-var geoFence = {
-    north: -22.0008,
-    south: -55.1124,
-    west: -71.9436,
-    east: -53.8381
-};
-
-var itIsRaining = true;
-
-
 var tweets = [];
 
 //Generic Express setup
@@ -65,7 +54,6 @@ app.get('/terms/:terms', function(req, res) {
     if(!_.isNull(currentTwitterStream)){
         currentTwitterStream.destroy();
     }
-    itIsRaining = false;
     watchTerms = req.params.terms.split(',');
     initTwitterStream(watchTerms);
     res.render('index', {terms : watchTerms});
@@ -91,10 +79,10 @@ sockets.sockets .on('connection', function(socket) {
 
 //Instantiate the twitter component
 var t = new twitter({
-    consumer_key: 'o9ifJf5orRUfCjulbHnrQ',
-    consumer_secret: 'SCmydn8u4dq2kpYkhflkSI5coodJBxywR7lULw5UJrI',
-    access_token_key: '1075261-XttD0ecjRekFgyIeJOdjSwLsGpXag7kDQea2Tf7FAM',
-    access_token_secret: '7aLWdy088sLw4iv2otrb21Y1kuucKtIGVLgQc22NVnHtX'
+    consumer_key: '',
+    consumer_secret: '',
+    access_token_key: '',
+    access_token_secret: ''
 });
 
 var currentTwitterStream = null;
@@ -106,8 +94,8 @@ function initTwitterStream (watchTerms){
         currentTwitterStream = stream;
         //We have a connection. Now watch the 'data' event for incomming tweets.
         stream.on('data', function(tweet) {
-
             tweets = [];
+            //Only send geolocated tweets
             if(tweet.coordinates){
                 tweets.push(tweet);
                 sockets.sockets.emit('data', tweets);
