@@ -1,6 +1,6 @@
 LiveRainMapper
 ==============
-AngularJs + NodeJs app that use the twitter stream to visualize the current local weather conditions over a map using the OpenWeatherMap
+AngularJs + NodeJs app that use the twitter stream to visualize the current local weather conditions over a map using the OpenWeatherMap weather overlay.
 
 
 Installation
@@ -15,12 +15,12 @@ Then the js needed:
 You can start the server by simply doing:
 ```node app.js```
 
-Express should be listening to the 3000 port
+Express should be listening on the 3000 port so go to http://localhost:3000 to get started
 
 
 Screenshot
 =======================
-![Map showing a rain front over Buenos Aires and a lot of people reporting it on twitter](https://raw.github.com/ravenlp/LiveRainMapper/master/screenshot.png "LiveRainMapper Screenshot")
+![Map showing a storm front over Buenos Aires and a lot of people reporting it on twitter](https://raw.github.com/ravenlp/LiveRainMapper/master/screenshot.png "LiveRainMapper Screenshot")
 
 
 To do
@@ -33,7 +33,14 @@ To do
 ## License
 
 ```
-Copyright (c) 2013 Jorge Condomí
+LiveRainMapper:
+    Copyright (c) 2013 Jorge Condomí
+
+Leaflet library:
+    Copyright (c) 2010-2013, Vladimir Agafonkin
+    Copyright (c) 2010-2011, CloudMade
+    All rights reserved.
+
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
