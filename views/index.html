@@ -6,14 +6,15 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title></title>
+    <title>Js Rain Mapper</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/libs/leaflet.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/libs/leaflet.css">
+    <link rel="stylesheet" href="/css/libs/Control.FullScreen.css">
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="css/libs/leaflet.ie.css">
+        <link rel="stylesheet" href="/css/libs/leaflet.ie.css">
     <![endif]-->
 </head>
 <body ng-app="rainMapper">
@@ -22,42 +23,36 @@
 <![endif]-->
 
 <!--[if lt IE 9]>
-<script src="es5-shim/es5-shim.js"></script>
-<script src="json3/lib/json3.min.js"></script>
+<script src="/es5-shim/es5-shim.js"></script>
+<script src="/json3/lib/json3.min.js"></script>
 <![endif]-->
 
-<!-- Add your site or application content here -->
 
+
+<%= terms %>
 <div id="wrapper" ng-view>
-
-
 
 </div>
 
-<script src="libs/jquery/jquery.js"></script>
+<script src="/libs/jquery/jquery.js"></script>
 
-<script src="libs/socket.io-client/dist/socket.io.min.js"></script>
+<script src="/libs/socket.io-client/dist/socket.io.min.js"></script>
 
-<script src="libs/angular/angular.js"></script>
-<script src="libs/angular-route/angular-route.js"></script>
-<script src="libs/angular-socket-io/socket.js"></script>
+<script src="/libs/angular/angular.js"></script>
+<script src="/libs/angular-route/angular-route.js"></script>
+<script src="/libs/angular-socket-io/socket.js"></script>
 
-<script src="js/libs/leaflet-src.js"></script>
-<script src="js/libs/leaflet-layer.js"></script>
+<script src="/js/libs/leaflet-src.js"></script>
+<script src="/js/libs/leaflet-layer.js"></script>
 
-<script src="js/libs/leaflet-openweathermap.js"></script>
-<script src="libs/angular-leaflet-directive/src/angular-leaflet-directive.js"></script>
+<script src="/js/libs/leaflet-openweathermap.js"></script>
+<script src="/js/libs/Control.FullScreen.js"></script>
+<script src="/libs/angular-leaflet-directive/src/angular-leaflet-directive.js"></script>
 
-<script src="js/script.js"></script>
-<script src="js/controllers/mainCtrl.js"></script>
+<script src="/js/script.js"></script>
+<script src="/js/controllers/mainCtrl.js"></script>
+<script src="/js/services/locationProvider.js"></script>
+<script src="/js/services/socketConnectionFactory.js"></script>
 
-
-<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-<script>
-    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-        g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-        s.parentNode.insertBefore(g,s)}(document,'script'));
-</script>
 </body>
 </html>

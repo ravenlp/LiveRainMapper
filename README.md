@@ -1,14 +1,30 @@
-Twitter Cashtag Heatmap
+LiveRainMapper
+==============
+AngularJs + NodeJs app that use the twitter stream to visualize the current local weather conditions
+
+
+Installation
 =======================
 
-A demonstration of using Node.js with Twitter's streaming capability to create a live heatmap via Socket.io!
+Download Node dependencies
+```npm install```
 
-Demo
-=======================
+Then the js needed
+```bower install```
 
-Check out the live demo at: http://lit-spire-4322.herokuapp.com/
+You can start the server by simply doing
+```node app.js```
+
+Express should be listening to the 3000 port
+
 
 Screenshot
 =======================
 
-![Screenshot](https://raw.github.com/thedillonb/twitter-cashtag-heatmap/master/screenshot.png)
+
+To do
+=======================
+* Add I18N support
+* Limit tweets to certain area
+* Add UI capability to change tweets terms
+* Add multi-client capability to the server

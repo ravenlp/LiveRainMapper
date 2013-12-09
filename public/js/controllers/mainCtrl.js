@@ -1,11 +1,7 @@
 'use strict';
 
-angular.module('rainMapper')
-    .controller('MainCtrl', ['$scope', 'socket','$timeout', function ($scope, socket, $timeout) {
-
-
-
-        $scope.tweets = [];
+app.controller('MainCtrl', ['$rootScope', '$scope', 'socket', '$timeout', 'geo',
+                    function ($rootScope,   $scope,   socket,   $timeout,   geo) {
 
         $scope.map = {
             center: {
@@ -13,10 +9,24 @@ angular.module('rainMapper')
                 lng: -57.17,
                 zoom: 5
             },
-            markers: {
-                's': {lat: -27.74, lng: -57.17, focus: true, draggable: false, message:'HOLA CHE'}
-            }
+            markers: {}
         };
+
+        // Listen to the event to change current location after user give us permission
+        $rootScope.$on('geolocationChange', function(e, data){
+            $scope.map.markers['me'] = {lat: data.latitude, lng: data.longitude, focus: true, draggable: false, message: ''}
+        });
+
+        $scope.tweets = [];
+
+        var rain_icon = L.icon({
+            iconUrl: '/images/rain_marker.png',
+            iconSize: [20, 32],
+            iconAnchor: [10, 32],
+            popupAnchor: [0, -32],
+            shadowSize: [0, 0],
+            shadowAnchor: [0, 0]
+        });
 
 
         var mapquestUrl = "http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png",
@@ -29,10 +39,11 @@ angular.module('rainMapper')
                 + 'Map: <a href="http://creativecommons.org/licenses/by-sa/2.0/" target="_blank">CC-BY-SA</a>',
             mapquest = new L.TileLayer(mapquestUrl, {maxZoom: 18, attribution: mapquestAttrib, subdomains: mapquestSubDomains});
 
-        var rain = L.OWM.rain({opacity: 0.5});
+
 
         var overlayMaps = {
-            "Rain": rain
+            "Lluvia": L.OWM.rain({opacity: 0.4}),
+            "Viento": L.OWM.wind({opacity: 0.4})
         };
 
         var baseMaps = {
@@ -41,15 +52,15 @@ angular.module('rainMapper')
 
         var layerControl = L.control.layers(baseMaps, overlayMaps, {collapsed: false});
 
+        var fullScreen = new L.Control.FullScreen();
+
         //map.addLayer(validatorsLayer);
         $timeout(function(){
-
-             console.log("HECHO");
             $scope.$broadcast('leafletDirectiveSetMap', ['addControl',layerControl]);
+            $scope.$broadcast('leafletDirectiveSetMap', ['addControl',fullScreen]);
         }, 1000);
 
         // Incoming data
-        var i = 0;
         socket.on('data', function(data) {
             if(data && angular.isArray(data)){
                 angular.forEach(data, function(t,i){
@@ -58,18 +69,18 @@ angular.module('rainMapper')
                         $scope.map.markers[t.id_str] = {
                             lat: t.coordinates.coordinates[1],
                             lng: t.coordinates.coordinates[0],
-                            focus: true,
+                            focus: false,
                             draggable: false,
-                            message: t.text
+                            message: t.text,
+                            icon: rain_icon
                         };
+                        if(!angular.isDefined($scope.map.markers[t.id_srt])){
+                            console.log("ERROR", t);
+                        }
                         console.log($scope.map.markers[t.id_srt]);
                     }
                 });
             }
-
-
-
-            console.log(i++, "DATA", data);
         });
 
 

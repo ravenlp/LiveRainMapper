@@ -5,7 +5,6 @@ var express = require('express')
   , io = require('socket.io')
   , http = require('http')
   , twitter = require('ntwitter')
-  , cronJob = require('cron').CronJob
   , _ = require('underscore')
   , path = require('path')
   , cons = require('consolidate');
@@ -17,8 +16,19 @@ var app = express();
 var server = http.createServer(app);
 
 
-// Twitter symbols array
-var watchTerms = ['llueve', 'lloviendo', 'llovio', 'llovió', 'LaVidaMeEnseño', 'wanda'];
+// default twitter symbols array
+var watchTerms = ['llueve', 'lloviendo', 'llovio', 'llovió', 'llovera', 'chaparron', 'viento', 'inundacion', 'agua', 'tormenta'];
+
+// Geo fence
+var geoFence = {
+    north: -22.0008,
+    south: -55.1124,
+    west: -71.9436,
+    east: -53.8381
+};
+
+var itIsRaining = true;
+
 
 var tweets = [];
 
@@ -44,30 +54,38 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+// Route needed to load partials
 app.get('/partials/:filename', function(req, res){
     var filename = req.params.filename;
     if(!filename) return;  // might want to change this
     res.render("partials/" + filename, {});
 });
 
+app.get('/terms/:terms', function(req, res) {
+    if(!_.isNull(currentTwitterStream)){
+        currentTwitterStream.destroy();
+    }
+    itIsRaining = false;
+    watchTerms = req.params.terms.split(',');
+    initTwitterStream(watchTerms);
+    res.render('index', {terms : watchTerms});
+
+});
+
 app.get('/', function(req, res) {
-    res.render('index', {});
+    if(!_.isNull(currentTwitterStream)){
+        currentTwitterStream.destroy();
+    }
+    // Default terms to look for
+    initTwitterStream(['llueve', 'lloviendo', 'llovio', 'llovió', 'tormenta', 'viento', 'chaparron']);
+    res.render('index', {terms : null});
 });
 
 //Start a Socket.IO listen
 var sockets = io.listen(server);
 
-
-
-//Set the sockets.io configuration.
-//THIS IS NECESSARY ONLY FOR HEROKU!
-sockets.configure(function() {
-    sockets.set('transports', ['xhr-polling']);
-    sockets.set('polling duration', 10);
-});
-
 //If the client just connected, give them fresh data!
-sockets.sockets.on('connection', function(socket) {
+sockets.sockets .on('connection', function(socket) {
     socket.emit('data', tweets);
 });
 
@@ -79,34 +97,28 @@ var t = new twitter({
     access_token_secret: '7aLWdy088sLw4iv2otrb21Y1kuucKtIGVLgQc22NVnHtX'
 });
 
+var currentTwitterStream = null;
 
+// Init the stream
+function initTwitterStream (watchTerms){
+    //Tell the twitter API to filter on the watchTerms
+    t.stream('statuses/filter', { track: watchTerms }, function(stream) {
+        currentTwitterStream = stream;
+        //We have a connection. Now watch the 'data' event for incomming tweets.
+        stream.on('data', function(tweet) {
 
-// //Tell the twitter API to filter on the watchTerms
-t.stream('statuses/filter', { track: watchTerms }, function(stream) {
-
-    //We have a connection. Now watch the 'data' event for incomming tweets.
-    stream.on('data', function(tweet) {
-        tweets = [];
-        if(tweet.coordinates){
-            tweets.push(tweet);
-            sockets.sockets.emit('data', tweets);
-        }
-
+            tweets = [];
+            if(tweet.coordinates){
+                tweets.push(tweet);
+                sockets.sockets.emit('data', tweets);
+            }
+        });
+        stream.on('destroy', function(response){
+            tweets = [];
+        });
     });
-});
+}
 
-//Reset everything on a new day!
-//We don't want to keep data around from the previous day so reset everything.
-new cronJob('0 0 0 * * *', function(){
-    //Reset the total
-    //watchList.total = 0;
-
-    //Clear out everything in the map
-    //_.each(watchTerms, function(v) { watchList.symbols[v] = 0; });
-
-    //Send the update to the clients
-    //sockets.sockets.emit('data', watchList);
-}, null, true);
 
 //Create the server
 server.listen(app.get('port'), function(){
